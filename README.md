@@ -16,7 +16,7 @@ What are the benefits?
 2) No DTO classes — you define projection interfaces instead, the Views, upon the JPA entities. Blaze Persistence then solves a lot of problems for you:
     - Handles N+1 query problems automatically. Check [TeamView#getMembers()](src/main/java/com/example/blaze_persistence_demo/views/TeamView.java#L16) in this project.
     - No @Transactional hell for reads — views are immutable POJOs, no open session needed.
-3) Blaze Persistence is not just about views, it has many integrations: GraphQL, Spring Data (check filter by email in [MemberView#getEmail()](src/main/java/com/example/blaze_persistence_demo/views/MemberView.java#L17)), Quarkus...etc.
+3) Blaze Persistence is not just about views, it has many integrations: GraphQL, Spring Data (check filter by email in [MemberRepository#findByEmail()](src/main/java/com/example/blaze_persistence_demo/repository/MemberRepository.java#L10)), Quarkus...etc.
 
 Possible cons I see:
 
