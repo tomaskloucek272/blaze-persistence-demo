@@ -1,4 +1,4 @@
-# Spring Boot 4+ - Hibernate 7+ - Blaze Persistence
+# Exploring Blaze-Persistence Views with Spring Boot 4 and Hibernate 7
 
 *Personal testing ground for Blaze-Persistence Entity Views with Spring Boot 4 and Hibernate 7.*
 
