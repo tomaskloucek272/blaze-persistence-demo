@@ -49,3 +49,6 @@ The second JOIN is redundant — BP generates one JOIN to resolve the `TeamView.
 
 You can call this endpoint to reproduce: `GET /teams/by-member-location?location=Prague`
 
+⚠️ **Pitfall:** Mixing manual joins with view mappings silently generates redundant SQL — BP does not warn you :(
+
+
