@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-add-member-points
+      author: tomas.kloucek
+      changes:
+        - addColumn:
+            tableName: member
+            columns:
+              - column:
+                  name: points
+                  type: INT

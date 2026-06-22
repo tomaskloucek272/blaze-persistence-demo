@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-insert-large-data
+      author: tomas.kloucek
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              DO $$
+              DECLARE
+                team_names TEXT[] := ARRAY[
+                  'Alpha','Beta','Gamma','Delta','Epsilon','Zeta','Eta','Theta','Iota','Kappa',
+                  'Lambda','Mu','Nu','Xi','Omicron','Pi','Rho','Sigma','Tau','Upsilon',
+                  'Phoenix','Titan','Atlas','Orion','Vega','Nova','Pulsar','Quasar','Nebula','Comet',
+                  'Falcon','Eagle','Hawk','Raven','Osprey','Condor','Heron','Crane','Wren','Swift',
+                  'Cobalt','Indigo','Amber','Crimson','Ivory','Jade','Onyx','Topaz','Garnet','Opal',
+                  'Summit','Ridge','Canyon','Valley','Glacier','Harbor','Meadow','Forest','Prairie','Tundra',
+                  'Apollo','Hermes','Athena','Ares','Hades','Poseidon','Demeter','Hestia','Nike','Iris',
+                  'Voltage','Circuit','Kernel','Socket','Vector','Matrix','Binary','Cipher','Helix','Flux',
+                  'Axiom','Nexus','Zenith','Apex','Vertex','Nadir','Pivot','Torque','Radius','Tangent',
+                  'Ember','Storm','Frost','Blaze','Gale','Mist','Dusk','Dawn','Tide','Crest'
+                ];
+                first_names TEXT[] := ARRAY[
+                  'Adam','Barbora','Cyril','Dana','Eduard','Filipa','Gustav','Helena','Ivan','Jana',
+                  'Karel','Lucie','Martin','Natalie','Ondrej','Petra','Radek','Simona','Tomas','Ursula',
+                  'Vaclav','Wendy','Xenie','Yvonne','Zbynek','Alena','Bohuslav','Cecilie','Dalibor','Eva',
+                  'Frantisek','Gabriela','Hynek','Irena','Jakub','Katerina','Ladislav','Monika','Norbert','Olga'
+                ];
+                last_names TEXT[] := ARRAY[
+                  'Novak','Svoboda','Novotny','Dvorak','Cerny','Prochazka','Kolar','Blaha','Vesely','Horak',
+                  'Nemec','Malek','Pospisil','Vlcek','Kratky','Dolezal','Pokorny','Kral','Blazek','Fiala',
+                  'Sedlak','Dostal','Machala','Havel','Kriz','Cech','Ruzicka','Mares','Urban','Kopecky',
+                  'Jelinek','Simek','Stastny','Hajek','Vavra','Zeman','Kohout','Bartos','Tichý','Sulc'
+                ];
+                team_id BIGINT;
+                member_id BIGINT;
+                t INT;
+                m INT;
+                fn TEXT;
+                ln TEXT;
+                suffix TEXT;
+              BEGIN
+                SELECT COALESCE(MAX(id), 0) + 1 INTO team_id FROM team;
+                SELECT COALESCE(MAX(id), 0) + 1 INTO member_id FROM member;
+
+                FOR t IN 1..100 LOOP
+                  suffix := CASE WHEN t <= 10 THEN '' ELSE ' ' || ((t - 1) / 10 + 1)::TEXT END;
+                  INSERT INTO team(id, name) VALUES (team_id, team_names[((t - 1) % 100) + 1] || ' Team' || suffix);
+
+                  FOR m IN 1..300 LOOP
+                    fn := first_names[((m - 1) % 40) + 1];
+                    ln := last_names[(((t * 7 + m * 3) - 1) % 40) + 1];
+                    INSERT INTO member(id, name, surname, email, "teamId")
+                    VALUES (
+                      member_id,
+                      fn,
+                      ln,
+                      lower(fn) || '.' || lower(ln) || member_id::TEXT || '@example.com',
+                      team_id
+                    );
+                    member_id := member_id + 1;
+                  END LOOP;
+
+                  team_id := team_id + 1;
+                END LOOP;
+              END;
+              $$;

@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-team.yaml
+  - include:
+      file: db/changelog/changes/002-create-member.yaml
+  - include:
+      file: db/changelog/changes/003-insert-data.yaml
+  - include:
+      file: db/changelog/changes/004-insert-large-data.yaml
+  - include:
+      file: db/changelog/changes/005-rename-teamId-to-teamid.yaml
+  - include:
+      file: db/changelog/changes/006-add-member-points.yaml
+  - include:
+      file: db/changelog/changes/007-update-member-points.yaml
+  - include:
+      file: db/changelog/changes/008-add-member-location.yaml

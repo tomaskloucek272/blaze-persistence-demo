@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-add-member-location
+      author: tomas.kloucek
+      changes:
+        - addColumn:
+            tableName: member
+            columns:
+              - column:
+                  name: location
+                  type: varchar(100)
+
+  - changeSet:
+      id: 008-update-member-location-initial
+      author: tomas.kloucek
+      changes:
+        - update:
+            tableName: member
+            where: id = 1
+            columns:
+              - column:
+                  name: location
+                  value: Praha
+        - update:
+            tableName: member
+            where: id = 2
+            columns:
+              - column:
+                  name: location
+                  value: Praha
+        - update:
+            tableName: member
+            where: id = 3
+            columns:
+              - column:
+                  name: location
+                  value: Brno
+        - update:
+            tableName: member
+            where: id = 4
+            columns:
+              - column:
+                  name: location
+                  value: Brno
+
+  - changeSet:
+      id: 008-update-member-location-bulk
+      author: tomas.kloucek
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              UPDATE member
+              SET location = CASE (id % 6)
+                WHEN 0 THEN 'Praha'
+                WHEN 1 THEN 'Brno'
+                WHEN 2 THEN 'Ostrava'
+                WHEN 3 THEN 'Plzen'
+                WHEN 4 THEN 'Liberec'
+                WHEN 5 THEN 'Olomouc'
+              END
+              WHERE id > 4;

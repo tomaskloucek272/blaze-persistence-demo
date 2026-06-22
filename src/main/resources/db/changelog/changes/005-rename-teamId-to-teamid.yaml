@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-rename-teamId-to-teamid
+      author: tomas.kloucek
+      changes:
+        - renameColumn:
+            tableName: member
+            oldColumnName: teamId
+            newColumnName: teamid
+            columnDataType: BIGINT

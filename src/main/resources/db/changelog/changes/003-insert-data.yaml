@@ -1,0 +1,95 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-insert-data
+      author: tomas.kloucek
+      changes:
+        - insert:
+            tableName: team
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Backend
+        - insert:
+            tableName: team
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Frontend
+        - insert:
+            tableName: member
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Tomas
+              - column:
+                  name: surname
+                  value: Novak
+              - column:
+                  name: email
+                  value: tomas.novak@example.com
+              - column:
+                  name: teamId
+                  value: 1
+        - insert:
+            tableName: member
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Jana
+              - column:
+                  name: surname
+                  value: Dvorak
+              - column:
+                  name: email
+                  value: jana.dvorak@example.com
+              - column:
+                  name: teamId
+                  value: 1
+        - insert:
+            tableName: member
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: Petr
+              - column:
+                  name: surname
+                  value: Kral
+              - column:
+                  name: email
+                  value: petr.kral@example.com
+              - column:
+                  name: teamId
+                  value: 2
+        - insert:
+            tableName: member
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Lucie
+              - column:
+                  name: surname
+                  value: Svoboda
+              - column:
+                  name: email
+                  value: lucie.svoboda@example.com
+              - column:
+                  name: teamId
+                  value: 2

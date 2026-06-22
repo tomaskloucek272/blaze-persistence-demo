@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-update-member-points
+      author: tomas.kloucek
+      changes:
+        - update:
+            tableName: member
+            columns:
+              - column:
+                  name: points
+                  value: 120
+            where: id = 1
+        - update:
+            tableName: member
+            columns:
+              - column:
+                  name: points
+                  value: 85
+            where: id = 2
+        - update:
+            tableName: member
+            columns:
+              - column:
+                  name: points
+                  value: 200
+            where: id = 3
+        - update:
+            tableName: member
+            columns:
+              - column:
+                  name: points
+                  value: 50
+            where: id = 4
+        - sql:
+            sql: UPDATE member SET points = (id * 37 + 13) % 500 WHERE id > 4
