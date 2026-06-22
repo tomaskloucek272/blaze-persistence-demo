@@ -37,4 +37,9 @@ public class TeamController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/by-member-location")
+    public ResponseEntity<List<TeamView>> getTeamsByMemberLocation(@RequestParam String location) {
+        return ResponseEntity.ok(teamService.getTeamsByMemberLocation(location));
+    }
 }

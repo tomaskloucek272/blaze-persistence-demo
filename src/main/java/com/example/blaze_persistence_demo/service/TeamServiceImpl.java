@@ -46,4 +46,12 @@ public class TeamServiceImpl {
     public Optional<MemberView> getMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
+
+    public List<TeamView> getTeamsByMemberLocation(String location) {
+        CriteriaBuilder<Team> cb = criteriaBuilderFactory.create(entityManager, Team.class)
+                .leftJoin("members", "m")
+                .where("m.location").eq(location);
+
+        return entityViewManager.applySetting(EntityViewSetting.create(TeamView.class), cb).getResultList();
+    }
 }
