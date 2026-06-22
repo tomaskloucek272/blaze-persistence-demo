@@ -10,7 +10,7 @@ However, [Blaze-Persistence](https://persistence.blazebit.com/documentation/1.6/
 
 ![img_1.png](img_1.png)
 
-What are the benefits?
+## Why Blaze Persistence Views?
 
 1) No MapStruct boilerplate needed.
 2) No DTO classes — you define projection interfaces instead, the Views, upon the JPA entities. Blaze Persistence then solves a lot of problems for you:
@@ -19,14 +19,14 @@ What are the benefits?
 3) Blaze Persistence is not just about views, it has many integrations: GraphQL, Spring Data (check filter by email in [MemberRepository#findByEmail()](src/main/java/com/example/blaze_persistence_demo/repository/MemberRepository.java#L10)), Quarkus...etc.
 4) **Spring MVC & WebFlux integration** — Blaze Persistence ships a `blaze-persistence-integration-spring-data-webmvc` (and a WebFlux variant) module that teaches Spring to deserialize a JSON request body directly into an `@UpdatableEntityView` proxy. The path variable is bound to the view's `@IdMapping` field via `@EntityViewId`, so you get a fully populated, change-tracked view object with zero manual wiring. Check [TeamController#updateMember()](src/main/java/com/example/blaze_persistence_demo/mvc/TeamController.java#L50) — the method signature alone shows how clean this is: no DTO, no mapper, no manual ID copy.
 
-Possible cons I see:
+## Blaze Persistence Trade-offs
 
 1) Longer learning curve. 
-2) When trying to filter through child entities I often ended up with Blaze Persistence creating SQL with doubled JOINS :(
+2) Filtering through child entities can silently generate redundant JOINs — see [Double JOIN Pitfall](#blaze-persistence-double-join-pitfall) below.
 
-## Double JOIN Pitfall
+## Blaze Persistence Double JOIN Pitfall
 
-You would think following makes sense.
+The intuitive approach looks like this:
 
 ```java
 public List<TeamView> getTeamsByMemberLocation(String location) {
@@ -38,7 +38,7 @@ public List<TeamView> getTeamsByMemberLocation(String location) {
 }
 ```
 
-Anyway this generates this redundant SQL:
+However, this generates redundant SQL:
 
 ```sql
 SELECT t.id, t.name, m1.id, m1.first_name, m1.location
