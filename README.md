@@ -1,7 +1,5 @@
 # Exploring Blaze-Persistence Views with Spring Boot 4 and Hibernate 7
 
-*Personal testing ground for Blaze-Persistence Entity Views with Spring Boot 4 and Hibernate 7.*
-
 Recently I was part of the team creating a bank mobile platform where we built a backend system which in a nutshell
 has the following architecture:
 
