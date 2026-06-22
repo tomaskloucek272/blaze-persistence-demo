@@ -7,11 +7,13 @@ import com.blazebit.persistence.view.EntityViewSetting;
 import com.example.blaze_persistence_demo.domain.Member;
 import com.example.blaze_persistence_demo.domain.Team;
 import com.example.blaze_persistence_demo.repository.MemberRepository;
+import com.example.blaze_persistence_demo.views.MemberUpdateView;
 import com.example.blaze_persistence_demo.views.MemberView;
 import com.example.blaze_persistence_demo.views.TeamView;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +47,11 @@ public class TeamServiceImpl {
 
     public Optional<MemberView> getMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public void updateMember(MemberUpdateView member) {
+        entityViewManager.save(entityManager, member);
     }
 
     public List<TeamView> getTeamsByMemberLocation(String location) {

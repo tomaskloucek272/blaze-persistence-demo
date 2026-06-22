@@ -17,6 +17,7 @@ What are the benefits?
     - Handles N+1 query problems automatically. Check [TeamView#getMembers()](src/main/java/com/example/blaze_persistence_demo/views/TeamView.java#L16) in this project.
     - No @Transactional hell for reads — views are immutable POJOs, no open session needed.
 3) Blaze Persistence is not just about views, it has many integrations: GraphQL, Spring Data (check filter by email in [MemberRepository#findByEmail()](src/main/java/com/example/blaze_persistence_demo/repository/MemberRepository.java#L10)), Quarkus...etc.
+4) **Spring MVC & WebFlux integration** — Blaze Persistence ships a `blaze-persistence-integration-spring-data-webmvc` (and a WebFlux variant) module that teaches Spring to deserialize a JSON request body directly into an `@UpdatableEntityView` proxy. The path variable is bound to the view's `@IdMapping` field via `@EntityViewId`, so you get a fully populated, change-tracked view object with zero manual wiring. Check [TeamController#updateMember()](src/main/java/com/example/blaze_persistence_demo/mvc/TeamController.java#L50) — the method signature alone shows how clean this is: no DTO, no mapper, no manual ID copy.
 
 Possible cons I see:
 
@@ -90,5 +91,17 @@ curl "http://localhost:8080/teams/members/by-email?email=john@example.com"
 
 # Get teams by member location (Double JOIN pitfall endpoint)
 curl "http://localhost:8080/teams/by-member-location?location=Prague"
+
+# Update a member (Blaze Persistence MVC view injection)
+curl -X PUT http://localhost:8080/teams/members/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": 1,
+    "name": "Jan",
+    "surname": "Novák",
+    "email": "jan.novak@example.com",
+    "points": 42,
+    "location": "Praha"
+  }'
 ```
 
