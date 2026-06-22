@@ -1,4 +1,6 @@
-# Spring Boot 4.0 - Hibernate 7+ - Blaze Persistence
+# Spring Boot 4+ - Hibernate 7+ - Blaze Persistence
+
+*Personal testing ground for Blaze-Persistence Entity Views with Spring Boot 4 and Hibernate 7.*
 
 Recently I was part of the team creating a bank mobile platform where we built a backend system which in a nutshell
 has the following architecture:
@@ -23,19 +25,21 @@ Possible cons I see:
 1) Longer learning curve. 
 2) When trying to filter through child entities I often ended up with Blaze Persistence creating SQL with doubled JOINS :(
 
-Sample:
+## Double JOIN Pitfall
 
 You would think following makes sense.
 
-    public List<TeamView> getTeamsByMemberLocation(String location) {
-        CriteriaBuilder<Team> cb = criteriaBuilderFactory.create(entityManager, Team.class)
-                .leftJoin("members", "m")
-                .where("m.location").eq(location);
+```java
+public List<TeamView> getTeamsByMemberLocation(String location) {
+    CriteriaBuilder<Team> cb = criteriaBuilderFactory.create(entityManager, Team.class)
+            .leftJoin("members", "m")
+            .where("m.location").eq(location);
 
-        return entityViewManager.applySetting(EntityViewSetting.create(TeamView.class), cb).getResultList();
-    }
+    return entityViewManager.applySetting(EntityViewSetting.create(TeamView.class), cb).getResultList();
+}
+```
 
-Anyway this generates this invalid SQL:
+Anyway this generates this redundant SQL:
 
 ```sql
 SELECT t.id, t.name, m1.id, m1.first_name, m1.location
@@ -51,4 +55,42 @@ You can call this endpoint to reproduce: `GET /teams/by-member-location?location
 
 ⚠️ **Pitfall:** Mixing manual joins with view mappings silently generates redundant SQL — BP does not warn you :(
 
+**Fix — use a subquery instead, let BP manage its own join for the view:**
+
+```java
+public List<TeamView> getTeamsByMemberLocation(String location) {
+    CriteriaBuilder<Team> cb = criteriaBuilderFactory.create(entityManager, Team.class, "t")
+            .whereExists()
+                .from(Member.class, "m")
+                .where("m.team").eqExpression("t")
+                .where("m.location").eq(location)
+            .end();
+
+    return entityViewManager.applySetting(EntityViewSetting.create(TeamView.class), cb).getResultList();
+}
+```
+
+## Running the project
+
+Start Postgres in Docker:
+
+```bash
+docker run --name postgres -e POSTGRES_PASSWORD=heslo12345 -p 5432:5432 -d postgres
+```
+
+Run the app (Liquibase will create schema and insert test data automatically), then test endpoints via curl:
+
+```bash
+# Get team with all members
+curl "http://localhost:8080/teams/Alpha/members"
+
+# Get members with points above threshold
+curl "http://localhost:8080/teams/members/top?minPoints=50"
+
+# Get member by email
+curl "http://localhost:8080/teams/members/by-email?email=john@example.com"
+
+# Get teams by member location (Double JOIN pitfall endpoint)
+curl "http://localhost:8080/teams/by-member-location?location=Prague"
+```
 
